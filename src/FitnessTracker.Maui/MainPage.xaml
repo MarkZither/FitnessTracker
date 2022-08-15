@@ -35,6 +35,9 @@
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Center" />
 
+            <ContentView x:Name="CntViewMap" MinimumHeightRequest="400" MinimumWidthRequest="50">
+                <Label Text="Map should over write this." />
+            </ContentView>
         </VerticalStackLayout>
     </ScrollView>
 
