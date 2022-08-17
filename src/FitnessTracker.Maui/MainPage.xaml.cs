@@ -13,6 +13,10 @@ using NetTopologySuite.Geometries;
 
 using NetTopologySuite.IO;
 
+using SharpGPX;
+
+using System.Text;
+
 namespace FitnessTracker.Maui
 {
     public partial class MainPage : ContentPage
@@ -52,7 +56,23 @@ namespace FitnessTracker.Maui
 
         public static ILayer CreateLineStringLayer(IStyle? style = null)
         {
-            var lineString = (LineString)new WKTReader().Read(WKTGr5);
+            using var stream = Task.Run(() => FileSystem.OpenAppPackageFileAsync("2022-05-02_20-01-31_-_walking.gpx")).GetAwaiter().GetResult();
+            var src = GpxClass.FromStream(stream);
+            StringBuilder sb = new StringBuilder("LINESTRING(");
+
+            bool isFirstPoint = true;
+            foreach (var item in src.Tracks[0].trkseg[0].trkpt)
+            {
+                if(!isFirstPoint)
+                { 
+                    sb.Append(", "); 
+                }
+                sb.Append($"{item.lat} {item.lon}");
+                isFirstPoint = false;
+            }
+            sb.Append(')');
+            var lineStringFromBuilder = sb.ToString();
+            var lineString = (LineString)new WKTReader().Read(lineStringFromBuilder);
             lineString = new LineString(lineString.Coordinates.Select(v => SphericalMercator.FromLonLat(v.Y, v.X).ToCoordinate()).ToArray());
 
             return new MemoryLayer
