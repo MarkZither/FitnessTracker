@@ -57,4 +57,13 @@
 	  <PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.5" />
     <PackageReference Include="BlueToque.SharpGPX" Version="2.22.302" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Controls\FlyoutHeader.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\AboutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
 </Project>
