@@ -9,12 +9,6 @@
             Padding="30,0"
             VerticalOptions="Center">
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
             <Label
                 Text="Hello, World!"
                 SemanticProperties.HeadingLevel="Level1"
@@ -37,7 +31,14 @@
 
             <ContentView x:Name="CntViewMap" MinimumHeightRequest="400" MinimumWidthRequest="50">
                 <Label Text="Map should over write this." />
-            </ContentView>
+            </ContentView>            
+            
+            <Image
+                Source="dotnet_bot.png"
+                SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                HeightRequest="200"
+                HorizontalOptions="Center" />
+            
         </VerticalStackLayout>
     </ScrollView>
 
