@@ -5,7 +5,12 @@ VisualStudioVersion = 17.3.32721.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7B4AD35B-EA00-497A-828B-064FA0B1DDC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessTracker.Maui", "src\FitnessTracker.Maui\FitnessTracker.Maui.csproj", "{C551FA54-2D91-4261-9AF6-5CC3400FC04A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessTracker.Maui", "src\FitnessTracker.Maui\FitnessTracker.Maui.csproj", "{C551FA54-2D91-4261-9AF6-5CC3400FC04A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{00859A2E-D57B-4B88-8B98-B740D1005807}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

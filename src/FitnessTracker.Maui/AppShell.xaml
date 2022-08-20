@@ -41,11 +41,10 @@
     <Shell.FlyoutHeader>
         <controls:FlyoutHeader />
     </Shell.FlyoutHeader>
-
     <ShellContent
         Style="{StaticResource MainPageShell}"
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate views:MainPage}"
         Route="MainPage" />
     
     <ShellContent Route="about"

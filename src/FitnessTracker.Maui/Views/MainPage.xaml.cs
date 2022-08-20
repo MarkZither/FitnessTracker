@@ -1,4 +1,6 @@
-﻿using Mapsui;
+﻿using FitnessTracker.Maui.ViewModels;
+
+using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
@@ -17,15 +19,14 @@ using SharpGPX;
 
 using System.Text;
 
-namespace FitnessTracker.Maui
+namespace FitnessTracker.Maui.Views
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
-
         public MainPage()
         {
             InitializeComponent();
+            BindingContext = new MainPageViewModel();
 
             var mapControl = new Mapsui.UI.Maui.MapControl();
             mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer("Marks.Fitness.MAUI.App"));
@@ -86,16 +87,5 @@ namespace FitnessTracker.Maui
 
         private const string WKTGr5 = "LINESTRING(49.621953 6.092523, 49.622953 6.093523, 49.623953 6.094523)";
 
-        private void OnCounterClicked(object sender, EventArgs e)
-        {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
-        }
     }
 }
