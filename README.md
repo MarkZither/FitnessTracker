@@ -6,6 +6,7 @@ https://docs.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/
 ## Essentials
 Getting started with MAUI essentials
 https://docs.microsoft.com/en-us/xamarin/essentials/get-started?tabs=windows%2Candroid
+https://github.com/dotnet/maui/blob/main/src/Essentials/samples/Samples/Platforms/Android/MainActivity.cs
 ```
  protected override void OnCreate(Bundle? savedInstanceState)
  {

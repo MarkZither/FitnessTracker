@@ -1,6 +1,8 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Widget;
 
 namespace FitnessTracker.Maui
 {
@@ -9,10 +11,33 @@ namespace FitnessTracker.Maui
     {
         protected override void OnCreate(Bundle? savedInstanceState)
         {
-            Microsoft.Maui.ApplicationModel.Platform.Init(this, savedInstanceState); // add this line to your code, it may also be called: bundle
-
             base.OnCreate(savedInstanceState);
+
+            Microsoft.Maui.ApplicationModel.Platform.Init(this, savedInstanceState); // add this line to your code, it may also be called: bundle
+            Microsoft.Maui.ApplicationModel.Platform.ActivityStateChanged += Platform_ActivityStateChanged;
         }
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            Microsoft.Maui.ApplicationModel.Platform.OnResume(this);
+        }
+
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+
+            Microsoft.Maui.ApplicationModel.Platform.OnNewIntent(intent);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Microsoft.Maui.ApplicationModel.Platform.ActivityStateChanged -= Platform_ActivityStateChanged;
+        }
+        void Platform_ActivityStateChanged(object sender, Microsoft.Maui.ApplicationModel.ActivityStateChangedEventArgs e) =>
+            Toast.MakeText(this, e.State.ToString(), ToastLength.Short).Show();
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
