@@ -1,10 +1,33 @@
-﻿namespace FitnessTracker.Maui
+﻿using Android.Service.QuickSettings;
+
+using CommunityToolkit.Mvvm.DependencyInjection;
+
+using FitnessTracker.Maui.Services;
+using FitnessTracker.Maui.ViewModels;
+
+namespace FitnessTracker.Maui
 {
     public partial class App : Application
     {
+        private bool _initialized;
         public App()
         {
             InitializeComponent();
+
+            // Register services
+            if (!_initialized)
+            {
+                _initialized = true;
+
+                Ioc.Default.ConfigureServices(
+                new ServiceCollection()
+                //Services
+                .AddSingleton<IGeolocationService, GeolocationService>()
+                //.AddSingleton(RestService.For<IRedditService>("https://www.reddit.com/"))
+                //ViewModels
+                .AddTransient<MainPageViewModel>()
+                .BuildServiceProvider());
+            }
 
             MainPage = new AppShell();
         }

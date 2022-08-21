@@ -1,4 +1,7 @@
-﻿using SkiaSharp.Views.Maui.Controls.Hosting;
+﻿using FitnessTracker.Maui.Services;
+using FitnessTracker.Maui.ViewModels;
+
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace FitnessTracker.Maui
 {
@@ -22,6 +25,9 @@ namespace FitnessTracker.Maui
                     essentials.AddAppAction("battery_info", "Battery Info");
                     essentials.OnAppAction(App.HandleAppActions);
                 });
+
+            //builder.Services.AddSingleton<IGeolocationService, GeolocationService>()
+            //    .AddTransient<MainPageViewModel>();
 
             return builder.Build();
         }

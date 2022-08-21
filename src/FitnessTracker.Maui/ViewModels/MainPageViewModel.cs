@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 
+using FitnessTracker.Maui.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +13,20 @@ namespace FitnessTracker.Maui.ViewModels
 {
     public partial class MainPageViewModel : BaseViewModel
     {
-        string notAvailable = "not available";
         string lastLocation;
         string currentLocation;
         int accuracy = (int)GeolocationAccuracy.Default;
         CancellationTokenSource cts;
-        public MainPageViewModel()
+        private readonly IGeolocationService _geolocationService;
+        public MainPageViewModel(IGeolocationService geolocationService)
         {
+            _geolocationService = geolocationService;
             BtnCounterText = "Click me";
             CounterClickedCommand = new RelayCommand(CounterClicked);
             GetLastLocationCommand = new Command(OnGetLastLocation);
             GetCurrentLocationCommand = new Command(OnGetCurrentLocation);
             OnGetCurrentLocation();
+            
         }
 
         private int count;
@@ -106,15 +110,16 @@ namespace FitnessTracker.Maui.ViewModels
             IsBusy = true;
             try
             {
-                var location = await Geolocation.GetLastKnownLocationAsync();
-                LastLocation = FormatLocation(location);
+                Location location = await _geolocationService.GetLastKnownLocationAsync();
+                LastLocation = _geolocationService.FormatLocation(location);
             }
             catch (Exception ex)
             {
-                LastLocation = FormatLocation(null, ex);
+                LastLocation = _geolocationService.FormatLocation(null, ex);
             }
             IsBusy = false;
         }
+
         async void OnGetCurrentLocation()
         {
             if (IsBusy)
@@ -123,29 +128,28 @@ namespace FitnessTracker.Maui.ViewModels
             IsBusy = true;
             try
             {
-                var request = new GeolocationRequest((GeolocationAccuracy)Accuracy);
                 cts = new CancellationTokenSource();
-                var location = await Geolocation.GetLocationAsync(request, cts.Token);
-                CurrentLocation = FormatLocation(location);
+                Location location = await _geolocationService.GetLocationAsync((GeolocationAccuracy)accuracy,cts);
+                CurrentLocation = _geolocationService.FormatLocation(location);
             }
             catch (FeatureNotSupportedException fnsEx)
             {
                 // Handle not supported on device exception
-                CurrentLocation = FormatLocation(null, fnsEx);
+                CurrentLocation = _geolocationService.FormatLocation(null, fnsEx);
             }
             catch (FeatureNotEnabledException fneEx)
             {
                 // Handle not enabled on device exception
-                CurrentLocation = FormatLocation(null, fneEx);
+                CurrentLocation = _geolocationService.FormatLocation(null, fneEx);
             }
             catch (PermissionException pEx)
             {
                 // Handle permission exception
-                CurrentLocation = FormatLocation(null, pEx);
+                CurrentLocation = _geolocationService.FormatLocation(null, pEx);
             }
             catch (Exception ex)
             {
-                CurrentLocation = FormatLocation(null, ex);
+                CurrentLocation = _geolocationService.FormatLocation(null, ex);
             }
             finally
             {
@@ -154,26 +158,7 @@ namespace FitnessTracker.Maui.ViewModels
             }
             IsBusy = false;
         }
-        string FormatLocation(Location location, Exception ex = null)
-        {
-            if (location == null)
-            {
-                return $"Unable to detect location. Exception: {ex?.Message ?? string.Empty}";
-            }
 
-            return
-                $"Latitude: {location.Latitude}\n" +
-                $"Longitude: {location.Longitude}\n" +
-                $"HorizontalAccuracy: {location.Accuracy}\n" +
-                $"Altitude: {(location.Altitude.HasValue ? location.Altitude.Value.ToString() : notAvailable)}\n" +
-                $"AltitudeRefSys: {location.AltitudeReferenceSystem.ToString()}\n" +
-                $"VerticalAccuracy: {(location.VerticalAccuracy.HasValue ? location.VerticalAccuracy.Value.ToString() : notAvailable)}\n" +
-                $"Heading: {(location.Course.HasValue ? location.Course.Value.ToString() : notAvailable)}\n" +
-                $"Speed: {(location.Speed.HasValue ? location.Speed.Value.ToString() : notAvailable)}\n" +
-                $"Date (UTC): {location.Timestamp:d}\n" +
-                $"Time (UTC): {location.Timestamp:T}\n" +
-                $"Moking Provider: {location.IsFromMockProvider}";
-        }
         public override void OnDisappearing()
         {
             if (IsBusy)

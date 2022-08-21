@@ -1,4 +1,6 @@
-﻿using FitnessTracker.Maui.ViewModels;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+
+using FitnessTracker.Maui.ViewModels;
 
 using Mapsui;
 using Mapsui.Extensions;
@@ -26,7 +28,8 @@ namespace FitnessTracker.Maui.Views
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = new MainPageViewModel();
+            //BindingContext = mainPageViewModel;
+            BindingContext = Ioc.Default.GetRequiredService<MainPageViewModel>();
 
             var mapControl = new Mapsui.UI.Maui.MapControl();
             mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer("Marks.Fitness.MAUI.App"));

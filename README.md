@@ -3,6 +3,10 @@
 ## MVVM
 https://docs.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/
 
+## Dependency Injection
+https://www.syncfusion.com/blogs/post/learn-how-to-use-dependency-injection-in-net-maui.aspx
+https://github.com/CommunityToolkit/MVVM-Samples/blob/master/samples/MvvmSampleXF/MvvmSampleXF/App.xaml.cs
+
 ## Essentials
 Getting started with MAUI essentials
 https://docs.microsoft.com/en-us/xamarin/essentials/get-started?tabs=windows%2Candroid
