@@ -1,6 +1,4 @@
-﻿using Android.Service.QuickSettings;
-
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 
 using FitnessTracker.Maui.Services;
 using FitnessTracker.Maui.ViewModels;
@@ -22,7 +20,11 @@ namespace FitnessTracker.Maui
                 Ioc.Default.ConfigureServices(
                 new ServiceCollection()
                 //Services
+#if DEBUG
+                .AddSingleton<IGeolocationService, MockGeolocationService>()
+#else
                 .AddSingleton<IGeolocationService, GeolocationService>()
+#endif
                 //.AddSingleton(RestService.For<IRedditService>("https://www.reddit.com/"))
                 //ViewModels
                 .AddTransient<MainPageViewModel>()

@@ -43,25 +43,37 @@ namespace FitnessTracker.Maui.Services
                 $"Speed: {(location.Speed.HasValue ? location.Speed.Value.ToString() : notAvailable)}\n" +
                 $"Date (UTC): {location.Timestamp:d}\n" +
                 $"Time (UTC): {location.Timestamp:T}\n" +
-                $"Moking Provider: {location.IsFromMockProvider}";
+                $"Mocking Provider: {location.IsFromMockProvider}";
         }
     }
 
     public class MockGeolocationService : IGeolocationService
     {
+        string notAvailable = "not available";
         public string FormatLocation(Location location, Exception ex = null)
         {
-            throw new NotImplementedException();
+            return
+                $"Latitude: {location.Latitude}\n" +
+                $"Longitude: {location.Longitude}\n" +
+                $"HorizontalAccuracy: {location.Accuracy}\n" +
+                $"Altitude: {(location.Altitude.HasValue ? location.Altitude.Value.ToString() : notAvailable)}\n" +
+                $"AltitudeRefSys: {location.AltitudeReferenceSystem.ToString()}\n" +
+                $"VerticalAccuracy: {(location.VerticalAccuracy.HasValue ? location.VerticalAccuracy.Value.ToString() : notAvailable)}\n" +
+                $"Heading: {(location.Course.HasValue ? location.Course.Value.ToString() : notAvailable)}\n" +
+                $"Speed: {(location.Speed.HasValue ? location.Speed.Value.ToString() : notAvailable)}\n" +
+                $"Date (UTC): {location.Timestamp:d}\n" +
+                $"Time (UTC): {location.Timestamp:T}\n" +
+                $"Mocking Provider: {location.IsFromMockProvider}";
         }
 
         public Task<Location> GetLastKnownLocationAsync()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new Location(49.621953, 6.092523));
         }
 
         public Task<Location> GetLocationAsync(GeolocationAccuracy Accuracy, CancellationTokenSource cts)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new Location(49.621953, 6.092523));
         }
     }
 }

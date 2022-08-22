@@ -15,6 +15,7 @@ namespace FitnessTracker.Maui.ViewModels
     {
         string lastLocation;
         string currentLocation;
+        Location currentLocation2;
         int accuracy = (int)GeolocationAccuracy.Default;
         CancellationTokenSource cts;
         private readonly IGeolocationService _geolocationService;
@@ -68,6 +69,12 @@ namespace FitnessTracker.Maui.ViewModels
         {
             get => currentLocation;
             set => SetProperty(ref currentLocation, value);
+        }
+
+        public Location CurrentLocation2
+        {
+            get => currentLocation2;
+            set => SetProperty(ref currentLocation2, value);
         }
 
         public string[] Accuracies
@@ -130,6 +137,7 @@ namespace FitnessTracker.Maui.ViewModels
             {
                 cts = new CancellationTokenSource();
                 Location location = await _geolocationService.GetLocationAsync((GeolocationAccuracy)accuracy,cts);
+                currentLocation2 = location;
                 CurrentLocation = _geolocationService.FormatLocation(location);
             }
             catch (FeatureNotSupportedException fnsEx)

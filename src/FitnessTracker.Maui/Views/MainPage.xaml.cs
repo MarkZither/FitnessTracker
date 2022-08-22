@@ -25,11 +25,12 @@ namespace FitnessTracker.Maui.Views
 {
     public partial class MainPage : ContentPage
     {
+        MainPageViewModel ViewModel;
         public MainPage()
         {
             InitializeComponent();
             //BindingContext = mainPageViewModel;
-            BindingContext = Ioc.Default.GetRequiredService<MainPageViewModel>();
+            BindingContext = ViewModel = Ioc.Default.GetRequiredService<MainPageViewModel>();
 
             var mapControl = new Mapsui.UI.Maui.MapControl();
             mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer("Marks.Fitness.MAUI.App"));
@@ -44,9 +45,41 @@ namespace FitnessTracker.Maui.Views
             mapControl.Map.Widgets.Add(new ZoomInOutWidget { MarginX = 20, MarginY = 40 });
             var lineStringLayer = CreateLineStringLayer(CreateLineStringStyle());
             mapControl.Map.Layers.Add(lineStringLayer);
+            ILayer layer = null; // holds the eventual result
+            var apiTask = new Task(() => layer = CreatePointLayerAsync().Result); // creates the task with the call on another thread
+            apiTask.Start(); // starts the task - important, or you'll spin forever
+            Task.WaitAll(apiTask); // waits for it to complete
+            mapControl.Map.Layers.Add(layer);
             CntViewMap.Content = mapControl;
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+        }
+        private async Task<MemoryLayer> CreatePointLayerAsync()
+        {
+            return new MemoryLayer
+            {
+                Name = "Points",
+                IsMapInfoLayer = true,
+                Features = await GetCurrentLocationAsync(),
+                Style = new LabelStyle { Text = "Default Label" }
+            };
+        }
+        private async Task<IEnumerable<IFeature>> GetCurrentLocationAsync()
+        {
+            while (ViewModel.CurrentLocation2 is null)
+            {
+                await Task.Delay(500);
+                ViewModel.GetCurrentLocationCommand.Execute(null);
+            }
+            var features = new List<IFeature>
+            {
+                new PointFeature(SphericalMercator.FromLonLat(ViewModel.CurrentLocation2.Longitude, ViewModel.CurrentLocation2.Latitude).ToMPoint())
+            };
+            return features;
+        }
         public static IStyle CreateLineStringStyle()
         {
             return new VectorStyle
