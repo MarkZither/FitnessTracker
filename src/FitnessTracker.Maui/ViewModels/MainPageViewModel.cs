@@ -14,6 +14,7 @@ namespace FitnessTracker.Maui.ViewModels
     public partial class MainPageViewModel : BaseViewModel
     {
         string lastLocation;
+        Location lastLocation2;
         string currentLocation;
         Location currentLocation2;
         int accuracy = (int)GeolocationAccuracy.Default;
@@ -26,8 +27,8 @@ namespace FitnessTracker.Maui.ViewModels
             CounterClickedCommand = new RelayCommand(CounterClicked);
             GetLastLocationCommand = new Command(OnGetLastLocation);
             GetCurrentLocationCommand = new Command(OnGetCurrentLocation);
+            OnGetLastLocation();
             OnGetCurrentLocation();
-            
         }
 
         private int count;
@@ -65,6 +66,11 @@ namespace FitnessTracker.Maui.ViewModels
             set => SetProperty(ref lastLocation, value);
         }
 
+        public Location LastLocation2
+        {
+            get => lastLocation2;
+            set => SetProperty(ref lastLocation2, value);
+        }
         public string CurrentLocation
         {
             get => currentLocation;
@@ -118,6 +124,7 @@ namespace FitnessTracker.Maui.ViewModels
             try
             {
                 Location location = await _geolocationService.GetLastKnownLocationAsync();
+                LastLocation2 = location;
                 LastLocation = _geolocationService.FormatLocation(location);
             }
             catch (Exception ex)

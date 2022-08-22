@@ -63,21 +63,24 @@ namespace FitnessTracker.Maui.Views
             {
                 Name = "Points",
                 IsMapInfoLayer = true,
-                Features = await GetCurrentLocationAsync(),
+                Features = await GetLocationAsync(),
                 Style = new LabelStyle { Text = "Default Label" }
             };
         }
-        private async Task<IEnumerable<IFeature>> GetCurrentLocationAsync()
+
+        private async Task<IEnumerable<IFeature>> GetLocationAsync()
         {
-            while (ViewModel.CurrentLocation2 is null)
+            var features = new List<IFeature>();
+
+            if (ViewModel.CurrentLocation2 != null)
             {
-                await Task.Delay(500);
-                ViewModel.GetCurrentLocationCommand.Execute(null);
+                features.Add(new PointFeature(SphericalMercator.FromLonLat(ViewModel.CurrentLocation2.Longitude, ViewModel.CurrentLocation2.Latitude).ToMPoint()));
             }
-            var features = new List<IFeature>
+            else if (ViewModel.LastLocation2 != null)
             {
-                new PointFeature(SphericalMercator.FromLonLat(ViewModel.CurrentLocation2.Longitude, ViewModel.CurrentLocation2.Latitude).ToMPoint())
-            };
+                features.Add(new PointFeature(SphericalMercator.FromLonLat(ViewModel.LastLocation2.Longitude, ViewModel.LastLocation2.Latitude).ToMPoint()));
+            }
+
             return features;
         }
         public static IStyle CreateLineStringStyle()
