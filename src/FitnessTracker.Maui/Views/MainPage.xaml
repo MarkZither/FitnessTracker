@@ -1,45 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:FitnessTracker.Maui.Controls"
              x:Class="FitnessTracker.Maui.Views.MainPage">
-
-    <ScrollView>
-        <VerticalStackLayout
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout
             Spacing="25"
             Padding="30,0"
             VerticalOptions="Center">
 
-            <Label
+                <Label
                 Text="Hello, World!"
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="32"
                 HorizontalOptions="Center" />
 
-            <Label
+                <Label
                 Text="Welcome to .NET Multi-platform App UI"
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                 FontSize="18"
                 HorizontalOptions="Center" />
 
-            <Button
+                <Button
                 x:Name="btnCounter"
                 Text="{Binding BtnCounterText, Mode=OneWay}"
                 Command="{Binding CounterClickedCommand}"
                 SemanticProperties.Hint="Counts the number of times you click"
                 HorizontalOptions="Center" />
 
-            <ContentView x:Name="CntViewMap" MinimumHeightRequest="400" MinimumWidthRequest="50">
-                <Label Text="Map should over write this." />
-            </ContentView>            
-            
-            <Image
+                <ContentView x:Name="CntViewMap" MinimumHeightRequest="400" MinimumWidthRequest="50">
+                    <Label Text="Map should over write this." />
+                </ContentView>
+
+                <Image
                 Source="dotnet_bot.png"
                 SemanticProperties.Description="Cute dot net bot waving hi to you!"
                 HeightRequest="200"
                 HorizontalOptions="Center" />
-            
-        </VerticalStackLayout>
-    </ScrollView>
 
+            </VerticalStackLayout>
+        </ScrollView>
+        <controls:AdControlView Grid.Row="1" HeightRequest="90" BackgroundColor="Red"/>
+    </Grid>
 </ContentPage>
