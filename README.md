@@ -32,3 +32,9 @@ https://github.com/dotnet/maui/blob/main/src/Essentials/samples/Samples/ViewMode
 
 ### Unexpected error when location is turned off on Windows
 https://github.com/xamarin/Essentials/issues/819
+
+
+## Handler-Mapper Pattern Instead of Customer Renderers
+https://github.com/dotnet/maui/wiki/Porting-Custom-Renderers-to-Handlers
+https://www.syncfusion.com/blogs/post/how-to-customize-net-maui-controls-with-handler-architecture.aspx
+https://devblogs.microsoft.com/dotnet/customizing-dotnet-maui-controls/
