@@ -46,6 +46,6 @@
 
             </VerticalStackLayout>
         </ScrollView>
-        <controls:AdControlView Grid.Row="1" HeightRequest="90" BackgroundColor="Red"/>
+        <controls:AdControl Grid.Row="1" HeightRequest="90"/>
     </Grid>
 </ContentPage>

@@ -65,6 +65,9 @@
 	  <MauiXaml Update="Controls\FlyoutHeader.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Controls\AdControl.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\AboutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -72,5 +75,11 @@
 
 	<ItemGroup>
 	  <Folder Include="Models\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Controls\AdControl.xaml.cs">
+	    <DependentUpon>AdControl.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>
