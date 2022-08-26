@@ -15,7 +15,7 @@ public partial class AdControl : ContentView
         Microsoft.Maui.Handlers.ContentViewHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
         {
 #if ANDROID
-            handler.PlatformView.SetBackgroundColor(Colors.Transparent.ToPlatform());
+            handler.PlatformView.SetBackgroundColor(Colors.DeepPink.ToPlatform());
 #elif IOS
             handler.PlatformView.SetBackgroundColor(Colors.Green.ToPlatform());
             handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
