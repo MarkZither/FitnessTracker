@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9D3D23EE-87EE-40E8-BD79-4A05229B6C65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessTracker.Tests", "Tests\FitnessTracker.Tests\FitnessTracker.Tests.csproj", "{A719DC3C-E817-41B5-8F29-CA36F792DAD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,12 +28,17 @@ Global
 		{C551FA54-2D91-4261-9AF6-5CC3400FC04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C551FA54-2D91-4261-9AF6-5CC3400FC04A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C551FA54-2D91-4261-9AF6-5CC3400FC04A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A719DC3C-E817-41B5-8F29-CA36F792DAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A719DC3C-E817-41B5-8F29-CA36F792DAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A719DC3C-E817-41B5-8F29-CA36F792DAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A719DC3C-E817-41B5-8F29-CA36F792DAD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C551FA54-2D91-4261-9AF6-5CC3400FC04A} = {7B4AD35B-EA00-497A-828B-064FA0B1DDC6}
+		{A719DC3C-E817-41B5-8F29-CA36F792DAD1} = {9D3D23EE-87EE-40E8-BD79-4A05229B6C65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19DA5C12-E48A-4D79-8706-734424AE15F4}
