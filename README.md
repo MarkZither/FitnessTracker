@@ -38,3 +38,20 @@ https://github.com/xamarin/Essentials/issues/819
 https://github.com/dotnet/maui/wiki/Porting-Custom-Renderers-to-Handlers
 https://www.syncfusion.com/blogs/post/how-to-customize-net-maui-controls-with-handler-architecture.aspx
 https://devblogs.microsoft.com/dotnet/customizing-dotnet-maui-controls/
+
+## Unit Test Project Setup
+https://github.com/dotnet/maui/discussions/5828
+https://github.com/dotnet/maui/issues/2112
+
+### FitnessTracker.Maui.csproj
+Added .net6.0 to `<TargetFrameworks>net6.0;net6.0-android</TargetFrameworks>` 
+and
+```
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+    ```
+in FitnessTracker.Maui.csproj.
+
+### FitnessTracker.Tests.csproj
+Added `<UseMaui>true</UseMaui>` to FitnessTracker.Tests.csproj
