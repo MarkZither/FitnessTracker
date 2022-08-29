@@ -13,6 +13,8 @@ using Mapsui.Widgets;
 using Mapsui.Widgets.ScaleBar;
 using Mapsui.Widgets.Zoom;
 
+using Microsoft.Maui.Platform;
+
 using NetTopologySuite.Geometries;
 
 using NetTopologySuite.IO;
@@ -51,6 +53,7 @@ namespace FitnessTracker.Maui.Views
             Task.WaitAll(apiTask); // waits for it to complete
             mapControl.Map.Layers.Add(layer);
             CntViewMap.Content = mapControl;
+            ModifyAd();
         }
 
         protected override async void OnAppearing()
@@ -124,7 +127,20 @@ namespace FitnessTracker.Maui.Views
             };
         }
 
-        private const string WKTGr5 = "LINESTRING(49.621953 6.092523, 49.622953 6.093523, 49.623953 6.094523)";
-
+        private void ModifyAd()
+        {
+            Microsoft.Maui.Handlers.ContentViewHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
+            {
+#if ANDROID
+            handler.PlatformView.SetBackgroundColor(Colors.DeepPink.ToPlatform());
+#elif IOS
+            handler.PlatformView.SetBackgroundColor(Colors.Green.ToPlatform());
+            handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+#elif WINDOWS
+            handler.PlatformView.Background = (Colors.Blue.ToPlatform());
+            //handler.PlatformView.FontWeight = Microsoft.UI.Text.FontWeights.Thin;
+#endif
+            });
+        }
     }
 }
