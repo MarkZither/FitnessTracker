@@ -24,7 +24,9 @@ namespace FitnessTracker.Maui.ViewModels
         {
             _geolocationService = geolocationService;
             BtnCounterText = "Click me";
+            BtnStartStopText = "Start";
             CounterClickedCommand = new RelayCommand(CounterClicked);
+            StartStopClickedCommand = new RelayCommand(StartStopClicked);
             GetLastLocationCommand = new Command(OnGetLastLocation);
             GetCurrentLocationCommand = new Command(OnGetCurrentLocation);
             OnGetLastLocation();
@@ -57,8 +59,8 @@ namespace FitnessTracker.Maui.ViewModels
         /// Gets the <see cref="ICommand"/> responsible for setting <see cref="MyTask"/>.
         /// </summary>
         public ICommand CounterClickedCommand { get; }
+        public ICommand StartStopClickedCommand { get; }
         public ICommand GetLastLocationCommand { get; }
-
         public ICommand GetCurrentLocationCommand { get; }
         public string LastLocation
         {
@@ -103,6 +105,28 @@ namespace FitnessTracker.Maui.ViewModels
             set => SetProperty(ref btnCounterText, value);
         }
 
+        private string btnStartStopText;
+
+        /// <summary>
+        /// Gets or sets the name to display.
+        /// </summary>
+        public string BtnStartStopText
+        {
+            get => btnStartStopText;
+            set => SetProperty(ref btnStartStopText, value);
+        }
+
+        private bool isRunning;
+
+        /// <summary>
+        /// Gets or sets the name to display.
+        /// </summary>
+        public bool IsRunning
+        {
+            get => isRunning;
+            set => SetProperty(ref isRunning, value);
+        }
+
         public void CounterClicked()
         {
             Count++;
@@ -111,6 +135,22 @@ namespace FitnessTracker.Maui.ViewModels
                 BtnCounterText = $"Clicked {Count} time";
             else
                 BtnCounterText = $"Clicked {Count} times";
+
+            //SemanticScreenReader.Announce(CounterBtn.Text);
+        }
+
+        public void StartStopClicked()
+        {
+            if (!isRunning)
+            {
+                BtnStartStopText = "Stop";
+            }
+            else
+            {
+                BtnStartStopText = "Start";
+            }
+            isRunning = !isRunning;
+            
 
             //SemanticScreenReader.Announce(CounterBtn.Text);
         }

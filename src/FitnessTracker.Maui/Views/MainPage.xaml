@@ -34,6 +34,13 @@
                 SemanticProperties.Hint="Counts the number of times you click"
                 HorizontalOptions="Center" />
 
+                <Button
+                x:Name="btnStartStop"
+                Text="{Binding BtnStartStopText, Mode=OneWay}"
+                Command="{Binding StartStopClickedCommand}"
+                SemanticProperties.Hint="Starts or Stops the tracker"
+                HorizontalOptions="Center" />
+
                 <ContentView x:Name="CntViewMap" MinimumHeightRequest="400" MinimumWidthRequest="50">
                     <Label Text="Map should over write this." />
                 </ContentView>
