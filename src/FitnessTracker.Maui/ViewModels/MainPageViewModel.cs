@@ -17,6 +17,7 @@ namespace FitnessTracker.Maui.ViewModels
         Location lastLocation2;
         string currentLocation;
         Location currentLocation2;
+        private List<Location> TrackedLocations { get; set; } = new();
         int accuracy = (int)GeolocationAccuracy.Default;
         CancellationTokenSource cts;
         private readonly IGeolocationService _geolocationService;
@@ -144,15 +145,24 @@ namespace FitnessTracker.Maui.ViewModels
             if (!isRunning)
             {
                 BtnStartStopText = "Stop";
+                isRunning = !isRunning;
+                var _ = Task.Run(() => TrackLocations());
             }
             else
             {
                 BtnStartStopText = "Start";
+                isRunning = !isRunning;
             }
-            isRunning = !isRunning;
-            
 
             //SemanticScreenReader.Announce(CounterBtn.Text);
+        }
+
+        void TrackLocations()
+        {
+            while(isRunning)
+            {
+                OnGetCurrentLocation();
+            }
         }
 
         async void OnGetLastLocation()
@@ -212,6 +222,10 @@ namespace FitnessTracker.Maui.ViewModels
                 cts = null;
             }
             IsBusy = false;
+            if(isRunning)
+            {
+                TrackedLocations.Add(CurrentLocation2);
+            }
         }
 
         public override void OnDisappearing()
