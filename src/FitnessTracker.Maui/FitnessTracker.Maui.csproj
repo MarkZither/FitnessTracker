@@ -59,6 +59,7 @@
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 	  <PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.5" />
     <PackageReference Include="BlueToque.SharpGPX" Version="2.22.302" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
 	</ItemGroup>
 
 	<ItemGroup>
