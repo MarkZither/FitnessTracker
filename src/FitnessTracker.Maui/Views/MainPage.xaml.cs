@@ -22,6 +22,7 @@ using NetTopologySuite.IO;
 using SharpGPX;
 
 using System.Text;
+using System.Threading;
 
 namespace FitnessTracker.Maui.Views
 {
@@ -52,6 +53,7 @@ namespace FitnessTracker.Maui.Views
             apiTask.Start(); // starts the task - important, or you'll spin forever
             Task.WaitAll(apiTask); // waits for it to complete
             mapControl.Map.Layers.Add(layer);
+            mapControl.Map.Layers.Add(CreateMutatingTriangleLayer(mapControl.Map.Extent));
             CntViewMap.Content = mapControl;
             ModifyAd();
         }
@@ -97,6 +99,46 @@ namespace FitnessTracker.Maui.Views
             };
         }
 
+        private static ILayer CreateMutatingTriangleLayer(MRect? envelope)
+        {
+            var layer = new MemoryLayer();
+
+            var polygon = new Polygon(new LinearRing(GenerateRandomPoints(envelope, 3).ToArray()));
+            var feature = new GeometryFeature(polygon);
+            layer.Features = new List<IFeature> { feature };
+
+            PeriodicTask.RunAsync(() =>
+            {
+                feature.Geometry = new Polygon(new LinearRing(GenerateRandomPoints(envelope, 3).ToArray()));
+                // Clear cache for change to show
+                feature.RenderedGeometry.Clear();
+                // Trigger DataChanged notification
+                layer.DataHasChanged();
+            },
+            TimeSpan.FromMilliseconds(1000));
+
+            return layer;
+        }
+
+        private static readonly Random Random = new Random(0);
+        public static IEnumerable<Coordinate> GenerateRandomPoints(MRect? envelope, int count = 25)
+        {
+            var result = new List<Coordinate>();
+            if (envelope == null)
+                return result;
+
+            for (var i = 0; i < count; i++)
+            {
+                result.Add(new Coordinate(
+                    Random.NextDouble() * envelope.Width + envelope.Left,
+                    Random.NextDouble() * envelope.Height + envelope.Bottom));
+            }
+
+            result.Add(result[0].Copy()); // close polygon by adding start point.
+
+            return result;
+        }
+
         public static ILayer CreateLineStringLayer(IStyle? style = null)
         {
             using var stream = Task.Run(() => FileSystem.OpenAppPackageFileAsync("2022-05-02_20-01-31_-_walking.gpx")).GetAwaiter().GetResult();
@@ -106,9 +148,9 @@ namespace FitnessTracker.Maui.Views
             bool isFirstPoint = true;
             foreach (var item in src.Tracks[0].trkseg[0].trkpt)
             {
-                if(!isFirstPoint)
-                { 
-                    sb.Append(", "); 
+                if (!isFirstPoint)
+                {
+                    sb.Append(", ");
                 }
                 sb.Append($"{item.lat} {item.lon}");
                 isFirstPoint = false;
@@ -132,7 +174,7 @@ namespace FitnessTracker.Maui.Views
             Microsoft.Maui.Handlers.ContentViewHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
             {
 #if ANDROID
-            handler.PlatformView.SetBackgroundColor(Colors.DeepPink.ToPlatform());
+                handler.PlatformView.SetBackgroundColor(Colors.DeepPink.ToPlatform());
 #elif IOS
             handler.PlatformView.SetBackgroundColor(Colors.Green.ToPlatform());
             handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
@@ -141,6 +183,33 @@ namespace FitnessTracker.Maui.Views
             //handler.PlatformView.FontWeight = Microsoft.UI.Text.FontWeights.Thin;
 #endif
             });
+        }
+
+        private static CancellationTokenSource? _cancelationTokenSource;
+        public class PeriodicTask
+        {
+            public static async Task RunAsync(Action action, TimeSpan period, CancellationToken? cancellationToken)
+            {
+                while (!(cancellationToken?.IsCancellationRequested ?? false))
+                {
+                    if (cancellationToken == null)
+                    {
+                        await Task.Delay(period);
+                    }
+                    else
+                    {
+                        await Task.Delay(period, cancellationToken.Value);
+                    }
+
+                    if (!(cancellationToken?.IsCancellationRequested ?? false))
+                        action();
+                }
+            }
+
+            public static Task RunAsync(Action action, TimeSpan period)
+            {
+                return RunAsync(action, period, _cancelationTokenSource?.Token);
+            }
         }
     }
 }
