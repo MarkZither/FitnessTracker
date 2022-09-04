@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SharpGPX;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,9 +52,17 @@ namespace FitnessTracker.Maui.Services
     public class MockGeolocationService : IGeolocationService
     {
         string notAvailable = "not available";
+        int trkptIndex = 0;
+        private readonly GpxClass gpxClass;
+
+        public MockGeolocationService()
+        {
+            using var stream = Task.Run(() => FileSystem.OpenAppPackageFileAsync("2022-05-02_20-01-31_-_walking.gpx")).GetAwaiter().GetResult();
+            gpxClass = GpxClass.FromStream(stream);
+        }
         public string FormatLocation(Location location, Exception ex = null)
         {
-            return
+            return location is null ? ex.ToString() :
                 $"Latitude: {location.Latitude}\n" +
                 $"Longitude: {location.Longitude}\n" +
                 $"HorizontalAccuracy: {location.Accuracy}\n" +
@@ -73,7 +83,11 @@ namespace FitnessTracker.Maui.Services
 
         public Task<Location> GetLocationAsync(GeolocationAccuracy Accuracy, CancellationTokenSource cts)
         {
-            return Task.FromResult(new Location(49.621953, 6.092523));
+            if(trkptIndex >= gpxClass.Tracks[0].trkseg[0].trkpt.Count() - 1)
+            { trkptIndex = 0; }
+            var trkpt = gpxClass.Tracks[0].trkseg[0].trkpt[trkptIndex];
+            trkptIndex++;
+            return Task.FromResult(new Location(((double)trkpt.lat), (double)trkpt.lon, trkpt.time) { Altitude = ((double)trkpt.ele) });
         }
     }
 }
