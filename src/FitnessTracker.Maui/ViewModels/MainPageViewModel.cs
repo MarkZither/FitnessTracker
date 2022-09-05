@@ -9,6 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using NetTopologySuite.Geometries;
+
+using NetTopologySuite.IO;
+using Location = Microsoft.Maui.Devices.Sensors.Location;
+using Mapsui.Projections;
+using Mapsui.Nts.Extensions;
+
 namespace FitnessTracker.Maui.ViewModels
 {
     public partial class MainPageViewModel : BaseViewModel
@@ -17,7 +24,6 @@ namespace FitnessTracker.Maui.ViewModels
         Location lastLocation2;
         string currentLocation;
         Location currentLocation2;
-        private List<Location> TrackedLocations { get; set; } = new();
         int accuracy = (int)GeolocationAccuracy.Default;
         CancellationTokenSource cts;
         private readonly IGeolocationService _geolocationService;
@@ -115,6 +121,27 @@ namespace FitnessTracker.Maui.ViewModels
         {
             get => btnStartStopText;
             set => SetProperty(ref btnStartStopText, value);
+        }
+
+        private LineString trackedLocationsLineString;
+
+        /// <summary>
+        /// Gets or sets the name to display.
+        /// </summary>
+        public LineString TrackedLocationsLineString
+        {
+            get => trackedLocationsLineString;
+            set => SetProperty(ref trackedLocationsLineString, value);
+        }
+
+        private List<Location> trackedLocations;
+        /// <summary>
+        /// Gets or sets the name to display.
+        /// </summary>
+        public List<Location> TrackedLocations
+        {
+            get => trackedLocations ?? new();
+            set => SetProperty(ref trackedLocations, value);
         }
 
         private bool isRunning;
@@ -224,7 +251,34 @@ namespace FitnessTracker.Maui.ViewModels
             IsBusy = false;
             if(isRunning)
             {
-                TrackedLocations.Add(CurrentLocation2);
+                var tempList = TrackedLocations;
+                tempList.Add(CurrentLocation2);
+                TrackedLocations = tempList;
+                if (TrackedLocations.Count != 1)
+                {
+                    StringBuilder sb = new StringBuilder("LINESTRING(");
+                    var locs = TrackedLocations.ToList();
+                    bool isFirstPoint = true;
+                    //foreach (var item in locs)
+                    foreach (var item in locs)
+                    {
+                        if (!isFirstPoint)
+                        {
+                            sb.Append(", ");
+                        }
+                        //sb.Append($"{item.lat} {item.lon}");
+                        sb.Append($"{item.Latitude} {item.Longitude}");
+                        isFirstPoint = false;
+                    }
+                    sb.Append(')');
+                    var lineStringFromBuilder = sb.ToString();
+                    var tempTrackedLocationsLineString = (LineString)new WKTReader().Read(lineStringFromBuilder);
+                    TrackedLocationsLineString = new LineString(tempTrackedLocationsLineString.Coordinates.Select(v => SphericalMercator.FromLonLat(v.Y, v.X).ToCoordinate()).ToArray());
+                }
+                else
+                {
+                    TrackedLocationsLineString = LineString.Empty;
+                }
             }
         }
 

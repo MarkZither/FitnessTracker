@@ -81,13 +81,14 @@ namespace FitnessTracker.Maui.Services
             return Task.FromResult(new Location(49.621953, 6.092523));
         }
 
-        public Task<Location> GetLocationAsync(GeolocationAccuracy Accuracy, CancellationTokenSource cts)
+        public async Task<Location> GetLocationAsync(GeolocationAccuracy Accuracy, CancellationTokenSource cts)
         {
+            await Task.Delay(750);
             if(trkptIndex >= gpxClass.Tracks[0].trkseg[0].trkpt.Count() - 1)
             { trkptIndex = 0; }
             var trkpt = gpxClass.Tracks[0].trkseg[0].trkpt[trkptIndex];
             trkptIndex++;
-            return Task.FromResult(new Location(((double)trkpt.lat), (double)trkpt.lon, trkpt.time) { Altitude = ((double)trkpt.ele) });
+            return new Location((double)trkpt.lat, (double)trkpt.lon, trkpt.time) { Altitude = (double)trkpt.ele };
         }
     }
 }

@@ -24,11 +24,14 @@ using SharpGPX;
 using System.Text;
 using System.Threading;
 
+using Map = Mapsui.Map;
+
 namespace FitnessTracker.Maui.Views
 {
     public partial class MainPage : ContentPage
     {
         MainPageViewModel ViewModel;
+        Map map;
         public MainPage()
         {
             InitializeComponent();
@@ -36,6 +39,7 @@ namespace FitnessTracker.Maui.Views
             BindingContext = ViewModel = Ioc.Default.GetRequiredService<MainPageViewModel>();
 
             var mapControl = new Mapsui.UI.Maui.MapControl();
+            map = mapControl.Map;
             mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer("Marks.Fitness.MAUI.App"));
             // Get the lon lat coordinates from somewhere (Mapsui can not help you there)
             var whereYouAre = new MPoint(6.092523, 49.621953);
@@ -46,14 +50,12 @@ namespace FitnessTracker.Maui.Views
             mapControl.Map.Home = n => n.NavigateTo(sphericalMercatorCoordinate, mapControl.Map.Resolutions[15]);
             mapControl.Map.Widgets.Add(new ScaleBarWidget(mapControl.Map) { TextAlignment = Alignment.Center, HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Center, VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Top });
             mapControl.Map.Widgets.Add(new ZoomInOutWidget { MarginX = 20, MarginY = 40 });
-            var lineStringLayer = CreateLineStringLayer(CreateLineStringStyle());
-            mapControl.Map.Layers.Add(lineStringLayer);
             ILayer layer = null; // holds the eventual result
             var apiTask = new Task(() => layer = CreatePointLayerAsync().Result); // creates the task with the call on another thread
             apiTask.Start(); // starts the task - important, or you'll spin forever
             Task.WaitAll(apiTask); // waits for it to complete
             mapControl.Map.Layers.Add(layer);
-            mapControl.Map.Layers.Add(CreateMutatingTriangleLayer(mapControl.Map.Extent));
+            mapControl.Map.Layers.Add(CreateLiveTrackerLineStringLayer(CreateLiveTrackingLineStringStyle()));
             CntViewMap.Content = mapControl;
             ModifyAd();
         }
@@ -88,85 +90,48 @@ namespace FitnessTracker.Maui.Views
 
             return features;
         }
-        public static IStyle CreateLineStringStyle()
+
+        public static IStyle CreateLiveTrackingLineStringStyle()
         {
             return new VectorStyle
             {
                 Fill = null,
                 Outline = null,
 #pragma warning disable CS8670 // Object or collection initializer implicitly dereferences possibly null member.
-                Line = { Color = Mapsui.Styles.Color.FromString("Red"), Width = 8 }
+                Line = { Color = Mapsui.Styles.Color.FromString("Green"), Width = 12 }
             };
         }
 
-        private static ILayer CreateMutatingTriangleLayer(MRect? envelope)
+        private ILayer CreateLiveTrackerLineStringLayer(IStyle? style = null)
         {
-            var layer = new MemoryLayer();
+            LineString lineString = LineString.Empty;
+            var feature = new GeometryFeature(lineString);
+            using var stream = Task.Run(() => FileSystem.OpenAppPackageFileAsync("2022-05-02_20-01-31_-_walking.gpx")).GetAwaiter().GetResult();
+            var src = GpxClass.FromStream(stream);
 
-            var polygon = new Polygon(new LinearRing(GenerateRandomPoints(envelope, 3).ToArray()));
-            var feature = new GeometryFeature(polygon);
-            layer.Features = new List<IFeature> { feature };
+            var layer = new MemoryLayer()
+            {
+                Features = new[] { feature },
+                Name = "LiveTrackerLineStringLayer",
+                Style = style
+            };
 
             PeriodicTask.RunAsync(() =>
             {
-                feature.Geometry = new Polygon(new LinearRing(GenerateRandomPoints(envelope, 3).ToArray()));
-                // Clear cache for change to show
-                feature.RenderedGeometry.Clear();
-                // Trigger DataChanged notification
-                layer.DataHasChanged();
+                if (ViewModel.IsRunning)
+                {
+                    lineString = ViewModel.TrackedLocationsLineString;
+
+                    feature.Geometry = lineString;
+                    // Clear cache for change to show
+                    feature.RenderedGeometry.Clear();
+                    // Trigger DataChanged notification
+                    layer.DataHasChanged();
+                }
             },
             TimeSpan.FromMilliseconds(1000));
 
             return layer;
-        }
-
-        private static readonly Random Random = new Random(0);
-        public static IEnumerable<Coordinate> GenerateRandomPoints(MRect? envelope, int count = 25)
-        {
-            var result = new List<Coordinate>();
-            if (envelope == null)
-                return result;
-
-            for (var i = 0; i < count; i++)
-            {
-                result.Add(new Coordinate(
-                    Random.NextDouble() * envelope.Width + envelope.Left,
-                    Random.NextDouble() * envelope.Height + envelope.Bottom));
-            }
-
-            result.Add(result[0].Copy()); // close polygon by adding start point.
-
-            return result;
-        }
-
-        public static ILayer CreateLineStringLayer(IStyle? style = null)
-        {
-            using var stream = Task.Run(() => FileSystem.OpenAppPackageFileAsync("2022-05-02_20-01-31_-_walking.gpx")).GetAwaiter().GetResult();
-            var src = GpxClass.FromStream(stream);
-            StringBuilder sb = new StringBuilder("LINESTRING(");
-
-            bool isFirstPoint = true;
-            foreach (var item in src.Tracks[0].trkseg[0].trkpt)
-            {
-                if (!isFirstPoint)
-                {
-                    sb.Append(", ");
-                }
-                sb.Append($"{item.lat} {item.lon}");
-                isFirstPoint = false;
-            }
-            sb.Append(')');
-            var lineStringFromBuilder = sb.ToString();
-            var lineString = (LineString)new WKTReader().Read(lineStringFromBuilder);
-            lineString = new LineString(lineString.Coordinates.Select(v => SphericalMercator.FromLonLat(v.Y, v.X).ToCoordinate()).ToArray());
-
-            return new MemoryLayer
-            {
-                Features = new[] { new GeometryFeature { Geometry = lineString } },
-                Name = "LineStringLayer",
-                Style = style
-
-            };
         }
 
         private void ModifyAd()
