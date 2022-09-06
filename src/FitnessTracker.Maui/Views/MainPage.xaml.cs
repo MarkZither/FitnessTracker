@@ -41,21 +41,20 @@ namespace FitnessTracker.Maui.Views
             var mapControl = new Mapsui.UI.Maui.MapControl();
             map = mapControl.Map;
             mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer("Marks.Fitness.MAUI.App"));
-            // Get the lon lat coordinates from somewhere (Mapsui can not help you there)
-            var whereYouAre = new MPoint(6.092523, 49.621953);
-            // OSM uses spherical mercator coordinates. So transform the lon lat coordinates to spherical mercator
-            var sphericalMercatorCoordinate = SphericalMercator.FromLonLat(whereYouAre.X, whereYouAre.Y).ToMPoint();
-            // Set the center of the viewport to the coordinate. The UI will refresh automatically
-            // Additionally you might want to set the resolution, this could depend on your specific purpose
-            mapControl.Map.Home = n => n.NavigateTo(sphericalMercatorCoordinate, mapControl.Map.Resolutions[15]);
-            mapControl.Map.Widgets.Add(new ScaleBarWidget(mapControl.Map) { TextAlignment = Alignment.Center, HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Center, VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Top });
-            mapControl.Map.Widgets.Add(new ZoomInOutWidget { MarginX = 20, MarginY = 40 });
             ILayer layer = null; // holds the eventual result
             var apiTask = new Task(() => layer = CreatePointLayerAsync().Result); // creates the task with the call on another thread
             apiTask.Start(); // starts the task - important, or you'll spin forever
             Task.WaitAll(apiTask); // waits for it to complete
             mapControl.Map.Layers.Add(layer);
             mapControl.Map.Layers.Add(CreateLiveTrackerLineStringLayer(CreateLiveTrackingLineStringStyle()));
+            // OSM uses spherical mercator coordinates. So transform the lon lat coordinates to spherical mercator
+            var sphericalMercatorCoordinate = SphericalMercator.FromLonLat(ViewModel.LastLocation2.Longitude, ViewModel.LastLocation2.Latitude).ToMPoint();
+            // Set the center of the viewport to the coordinate. The UI will refresh automatically
+            // Additionally you might want to set the resolution, this could depend on your specific purpose
+            mapControl.Map.Home = n => n.NavigateTo(sphericalMercatorCoordinate, mapControl.Map.Resolutions[15]);
+            mapControl.Map.Widgets.Add(new ScaleBarWidget(mapControl.Map) { TextAlignment = Alignment.Center, HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Center, VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Top });
+            mapControl.Map.Widgets.Add(new ZoomInOutWidget { MarginX = 20, MarginY = 40 });
+
             CntViewMap.Content = mapControl;
             ModifyAd();
         }
@@ -81,11 +80,17 @@ namespace FitnessTracker.Maui.Views
 
             if (ViewModel.CurrentLocation2 != null)
             {
-                features.Add(new PointFeature(SphericalMercator.FromLonLat(ViewModel.CurrentLocation2.Longitude, ViewModel.CurrentLocation2.Latitude).ToMPoint()));
+                var sphericalMercatorCoordinate = SphericalMercator.FromLonLat(ViewModel.CurrentLocation2.Longitude, ViewModel.CurrentLocation2.Latitude).ToMPoint();
+
+                features.Add(new PointFeature(sphericalMercatorCoordinate));
+                map.Home = n => n.NavigateTo(sphericalMercatorCoordinate, map.Resolutions[15]);
             }
             else if (ViewModel.LastLocation2 != null)
             {
-                features.Add(new PointFeature(SphericalMercator.FromLonLat(ViewModel.LastLocation2.Longitude, ViewModel.LastLocation2.Latitude).ToMPoint()));
+                var sphericalMercatorCoordinate = SphericalMercator.FromLonLat(ViewModel.LastLocation2.Longitude, ViewModel.LastLocation2.Latitude).ToMPoint();
+                
+                features.Add(new PointFeature(sphericalMercatorCoordinate));
+                map.Home = n => n.NavigateTo(sphericalMercatorCoordinate, map.Resolutions[15]);
             }
 
             return features;
@@ -106,8 +111,6 @@ namespace FitnessTracker.Maui.Views
         {
             LineString lineString = LineString.Empty;
             var feature = new GeometryFeature(lineString);
-            using var stream = Task.Run(() => FileSystem.OpenAppPackageFileAsync("2022-05-02_20-01-31_-_walking.gpx")).GetAwaiter().GetResult();
-            var src = GpxClass.FromStream(stream);
 
             var layer = new MemoryLayer()
             {
