@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using AppCenterExtensions;
+
+using CommunityToolkit.Mvvm.DependencyInjection;
 
 using FitnessTracker.Maui.Services;
 using FitnessTracker.Maui.ViewModels;
@@ -29,6 +31,15 @@ namespace FitnessTracker.Maui
                 //ViewModels
                 .AddTransient<MainPageViewModel>()
                 .BuildServiceProvider());
+
+                AppCenterSetup.Instance.Start(
+                    //"[iOS AppCenter secret]",
+                    //"[Android AppCenter secret]",
+                    "uwp={Your app secret here};", // +
+                //"android={Your Android App secret here};" +
+                //"ios={Your iOS App secret here};" +
+                //"macos={Your macOS App secret here};",
+                true);
             }
 
             MainPage = new AppShell();

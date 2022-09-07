@@ -56,6 +56,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="AppCenterExtensions.AppInsights" Version="1.1.8" />
+	  <PackageReference Include="AppCenterExtensions.Maui" Version="1.1.4" />
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 	  <PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.5" />
     <PackageReference Include="BlueToque.SharpGPX" Version="2.22.302" />
@@ -70,6 +72,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\AboutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
