@@ -36,6 +36,12 @@
             <Setter Property="Shell.BackgroundColor"
                     Value="#96d1ff" />
         </Style>
+        <Style x:Key="SettingsShell"
+               TargetType="Element"
+               BasedOn="{StaticResource BaseStyle}">
+            <Setter Property="Shell.BackgroundColor"
+                    Value="DarkOrange" />
+        </Style>
     </Shell.Resources>
 
     <Shell.FlyoutHeader>
@@ -52,6 +58,12 @@
                   Title="About"
                   Icon="info.png"
                   ContentTemplate="{DataTemplate views:AboutPage}" />
+
+    <ShellContent Route="settings"
+                  Style="{StaticResource SettingsShell}"
+                  Title="Settings"
+                  Icon="info.png"
+                  ContentTemplate="{DataTemplate views:SettingsPage}" />
 
     <MenuItem Text="Help"
               IconImageSource="help.png"
