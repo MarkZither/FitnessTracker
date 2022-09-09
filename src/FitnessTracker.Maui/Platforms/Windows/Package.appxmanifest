@@ -37,6 +37,8 @@
   </Applications>
 
   <Capabilities>
+    <!-- https://docs.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations -->
+    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
     <DeviceCapability Name="location" />
   </Capabilities>
