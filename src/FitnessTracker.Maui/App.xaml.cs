@@ -1,9 +1,15 @@
 ﻿using AppCenterExtensions;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 using CommunityToolkit.Mvvm.DependencyInjection;
 
 using FitnessTracker.Maui.Services;
 using FitnessTracker.Maui.ViewModels;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
+using FitnessTracker.Maui.Configuration;
 
 namespace FitnessTracker.Maui
 {
@@ -32,14 +38,30 @@ namespace FitnessTracker.Maui
                 .AddTransient<MainPageViewModel>()
                 .BuildServiceProvider());
 
-                AppCenterSetup.Instance.Start(
-                    //"[iOS AppCenter secret]",
-                    //"[Android AppCenter secret]",
-                    "uwp={Your app secret here};", // +
+                //AppCenterSetup.Instance.Start(
+                //    //"[iOS AppCenter secret]",
+                //    //"[Android AppCenter secret]",
+                //    "uwp={Your app secret here};", // +
+                ////"android={Your Android App secret here};" +
+                ////"ios={Your iOS App secret here};" +
+                ////"macos={Your macOS App secret here};",
+                //true);
+                var a = Assembly.GetExecutingAssembly();
+                using var stream = a.GetManifestResourceStream("FitnessTracker.Maui.appsettings.json");
+
+                var config = new ConfigurationBuilder()
+                            .AddJsonStream(stream)
+                            .AddUserSecrets<App>()
+                            .Build();
+
+                var settings = config.GetRequiredSection("Settings").Get<FitnessSettings>();
+
+                AppCenter.Start(@$"uwp={settings.AppCenterWindowsDesktop};
+                windowsdesktop={settings.AppCenterWindowsDesktop};", // +
                 //"android={Your Android App secret here};" +
                 //"ios={Your iOS App secret here};" +
                 //"macos={Your macOS App secret here};",
-                true);
+                typeof(Analytics), typeof(Crashes));
             }
 
             MainPage = new AppShell();

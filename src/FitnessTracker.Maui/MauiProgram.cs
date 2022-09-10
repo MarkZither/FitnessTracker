@@ -1,7 +1,11 @@
 ﻿using FitnessTracker.Maui.Services;
 using FitnessTracker.Maui.ViewModels;
 
+using Microsoft.Extensions.Configuration;
+
 using SkiaSharp.Views.Maui.Controls.Hosting;
+
+using System.Reflection;
 
 namespace FitnessTracker.Maui
 {
@@ -28,6 +32,16 @@ namespace FitnessTracker.Maui
 
             //builder.Services.AddSingleton<IGeolocationService, GeolocationService>()
             //    .AddTransient<MainPageViewModel>();
+            var a = Assembly.GetExecutingAssembly();
+            using var stream = a.GetManifestResourceStream("FitnessTracker.Maui.appsettings.json");
+
+            var config = new ConfigurationBuilder()
+                        .AddJsonStream(stream)
+                        .AddUserSecrets<App>()
+                        .Build();
+
+
+            builder.Configuration.AddConfiguration(config);
 
             return builder.Build();
         }

@@ -31,6 +31,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<Nullable>annotations</Nullable>
 		<DefaultLanguage>en-gb</DefaultLanguage>
+		<UserSecretsId>86dea849-d4a0-46c0-9f3f-097b13324086</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -52,7 +53,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="appsettings.json" />
 	  <None Remove="Resources\Raw\2022-05-02_20-01-31_-_walking.gpx" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="appsettings.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -62,6 +68,9 @@
 	  <PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.5" />
     <PackageReference Include="BlueToque.SharpGPX" Version="2.22.302" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

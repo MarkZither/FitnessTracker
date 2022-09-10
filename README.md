@@ -55,3 +55,7 @@ in FitnessTracker.Maui.csproj.
 
 ### FitnessTracker.Tests.csproj
 Added `<UseMaui>true</UseMaui>` to FitnessTracker.Tests.csproj
+
+## Configuration
+This is mostly for debugging and avoiding hardcoding secrets and having to commit them to the git repo.
+https://montemagno.com/dotnet-maui-appsettings-json-configuration/
