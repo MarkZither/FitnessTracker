@@ -10,7 +10,7 @@ namespace FitnessTracker.Maui.Configuration
     public class FitnessSettings
     {
         public string AppCenterWindowsDesktop { get; set; }
-        public bool KeyTwo { get; set; }
+        public bool MockGPS { get; set; }
         public NestedSettings KeyThree { get; set; } = null!;
     }
 

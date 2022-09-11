@@ -20,20 +20,35 @@ namespace FitnessTracker.Maui
         {
             InitializeComponent();
 
+            var a = Assembly.GetExecutingAssembly();
+            using var stream = a.GetManifestResourceStream("FitnessTracker.Maui.appsettings.json");
+
+            var config = new ConfigurationBuilder()
+                        .AddJsonStream(stream)
+                        .AddUserSecrets<App>()
+                        .Build();
+
+            var settings = config.GetRequiredSection("Settings").Get<FitnessSettings>();
+
             // Register services
             if (!_initialized)
             {
                 _initialized = true;
 
-                Ioc.Default.ConfigureServices(
-                new ServiceCollection()
+                var serviceCollection = new ServiceCollection();
                 //Services
-#if DEBUG
-                .AddSingleton<IGeolocationService, MockGeolocationService>()
-#else
-                .AddSingleton<IGeolocationService, GeolocationService>()
-#endif
+                if (settings.MockGPS)
+                {
+                    serviceCollection.AddSingleton<IGeolocationService, MockGeolocationService>();
+                }
+                else
+                {
+                    serviceCollection.AddSingleton<IGeolocationService, GeolocationService>();
+                }
                 //.AddSingleton(RestService.For<IRedditService>("https://www.reddit.com/"))
+
+                Ioc.Default.ConfigureServices(
+                serviceCollection
                 //ViewModels
                 .AddTransient<MainPageViewModel>()
                 .BuildServiceProvider());
@@ -46,15 +61,7 @@ namespace FitnessTracker.Maui
                 ////"ios={Your iOS App secret here};" +
                 ////"macos={Your macOS App secret here};",
                 //true);
-                var a = Assembly.GetExecutingAssembly();
-                using var stream = a.GetManifestResourceStream("FitnessTracker.Maui.appsettings.json");
 
-                var config = new ConfigurationBuilder()
-                            .AddJsonStream(stream)
-                            .AddUserSecrets<App>()
-                            .Build();
-
-                var settings = config.GetRequiredSection("Settings").Get<FitnessSettings>();
 
                 AppCenter.Start(@$"uwp={settings.AppCenterWindowsDesktop};
                 windowsdesktop={settings.AppCenterWindowsDesktop};", // +
