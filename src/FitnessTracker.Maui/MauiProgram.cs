@@ -2,7 +2,7 @@
 using FitnessTracker.Maui.ViewModels;
 
 using Microsoft.Extensions.Configuration;
-
+using CommunityToolkit.Maui;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 using System.Reflection;
@@ -16,6 +16,7 @@ namespace FitnessTracker.Maui
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .UseSkiaSharp()
                 .ConfigureFonts(fonts =>
                 {

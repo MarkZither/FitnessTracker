@@ -15,6 +15,8 @@ using NetTopologySuite.IO;
 using Location = Microsoft.Maui.Devices.Sensors.Location;
 using Mapsui.Projections;
 using Mapsui.Nts.Extensions;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 
 namespace FitnessTracker.Maui.ViewModels
 {
@@ -33,7 +35,7 @@ namespace FitnessTracker.Maui.ViewModels
             BtnCounterText = "Click me";
             BtnStartStopText = "Start";
             CounterClickedCommand = new RelayCommand(CounterClicked);
-            StartStopClickedCommand = new RelayCommand(StartStopClicked);
+            StartStopClickedCommand = new AsyncRelayCommand(StartStopClickedAsync);
             GetLastLocationCommand = new Command(OnGetLastLocation);
             GetCurrentLocationCommand = new Command(OnGetCurrentLocation);
             OnGetLastLocation();
@@ -167,18 +169,28 @@ namespace FitnessTracker.Maui.ViewModels
             //SemanticScreenReader.Announce(CounterBtn.Text);
         }
 
-        public void StartStopClicked()
+        public async Task StartStopClickedAsync()
         {
+            ToastDuration duration = ToastDuration.Long;
+            double fontSize = 14;
             if (!isRunning)
             {
                 BtnStartStopText = "Stop";
                 isRunning = !isRunning;
                 var _ = Task.Run(() => TrackLocations());
+                var message = "Started";
+                var toast = Toast.Make(message, duration, fontSize);
+                var cancellationToken = new CancellationToken();
+                await toast.Show(cancellationToken);
             }
             else
             {
                 BtnStartStopText = "Start";
                 isRunning = !isRunning;
+                var message = "Stopped";
+                var toast = Toast.Make(message, duration, fontSize);
+                var cancellationToken = new CancellationToken(); 
+                await toast.Show(cancellationToken);
             }
 
             //SemanticScreenReader.Announce(CounterBtn.Text);
