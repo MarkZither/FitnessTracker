@@ -4,6 +4,7 @@ using FitnessTracker.Maui.ViewModels;
 using Microsoft.Extensions.Configuration;
 using CommunityToolkit.Maui;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using Serilog;
 
 using System.Reflection;
 
@@ -43,6 +44,11 @@ namespace FitnessTracker.Maui
 
 
             builder.Configuration.AddConfiguration(config);
+
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config)
+                .CreateLogger();
+            builder.Logging.AddSerilog(logger);
 
             return builder.Build();
         }
