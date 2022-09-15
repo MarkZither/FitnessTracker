@@ -17,6 +17,7 @@ using Mapsui.Projections;
 using Mapsui.Nts.Extensions;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessTracker.Maui.ViewModels
 {
@@ -29,9 +30,11 @@ namespace FitnessTracker.Maui.ViewModels
         int accuracy = (int)GeolocationAccuracy.Default;
         CancellationTokenSource cts;
         private readonly IGeolocationService _geolocationService;
-        public MainPageViewModel(IGeolocationService geolocationService)
+        private readonly ILogger<MainPageViewModel> _logger;
+        public MainPageViewModel(IGeolocationService geolocationService, ILogger<MainPageViewModel> logger)
         {
             _geolocationService = geolocationService;
+            _logger = logger;
             BtnCounterText = "Click me";
             BtnStartStopText = "Start";
             CounterClickedCommand = new RelayCommand(CounterClicked);
@@ -179,6 +182,7 @@ namespace FitnessTracker.Maui.ViewModels
                 isRunning = !isRunning;
                 var _ = Task.Run(() => TrackLocations());
                 var message = "Started";
+                _logger.LogInformation("Started Tracking {DateTime} at {@CurrentLocation}", DateTime.Now, currentLocation2);
                 var toast = Toast.Make(message, duration, fontSize);
                 var cancellationToken = new CancellationToken();
                 await toast.Show(cancellationToken);

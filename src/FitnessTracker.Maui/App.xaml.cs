@@ -10,6 +10,7 @@ using FitnessTracker.Maui.ViewModels;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using FitnessTracker.Maui.Configuration;
+using Serilog;
 
 namespace FitnessTracker.Maui
 {
@@ -27,6 +28,14 @@ namespace FitnessTracker.Maui
                         .AddJsonStream(stream)
                         .AddUserSecrets<App>()
                         .Build();
+
+            const string fileOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}";
+            var logPath = Path.Combine(FileSystem.Current.CacheDirectory, "Logs", $"FitnessTracker-{DateTime.Now.ToString("yyyymmdd")}.log");
+
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config)
+                .WriteTo.File(logPath, outputTemplate: fileOutputTemplate)
+                .CreateLogger();
 
             var settings = config.GetRequiredSection("Settings").Get<FitnessSettings>();
 
@@ -51,24 +60,26 @@ namespace FitnessTracker.Maui
                 serviceCollection
                 //ViewModels
                 .AddTransient<MainPageViewModel>()
+                .AddLogging(l => l.AddSerilog(logger))
                 .BuildServiceProvider());
 
-                //AppCenterSetup.Instance.Start(
-                //    //"[iOS AppCenter secret]",
-                //    //"[Android AppCenter secret]",
-                //    "uwp={Your app secret here};", // +
-                ////"android={Your Android App secret here};" +
-                ////"ios={Your iOS App secret here};" +
-                ////"macos={Your macOS App secret here};",
-                //true);
-
-
-                AppCenter.Start(@$"uwp={settings.AppCenterWindowsDesktop};
-                windowsdesktop={settings.AppCenterWindowsDesktop};", // +
+                AppCenterSetup.Instance.Start(
+                    //"[iOS AppCenter secret]",
+                    //"[Android AppCenter secret]",
+                    @$"uwp={settings.AppCenterWindowsDesktop};
+                    windowsdesktop={settings.AppCenterWindowsDesktop};", // +
                 //"android={Your Android App secret here};" +
                 //"ios={Your iOS App secret here};" +
                 //"macos={Your macOS App secret here};",
-                typeof(Analytics), typeof(Crashes));
+                true);
+
+
+                //AppCenter.Start(@$"uwp={settings.AppCenterWindowsDesktop};
+                //windowsdesktop={settings.AppCenterWindowsDesktop};", // +
+                ////"android={Your Android App secret here};" +
+                ////"ios={Your iOS App secret here};" +
+                ////"macos={Your macOS App secret here};",
+                //typeof(Analytics), typeof(Crashes));
             }
 
             MainPage = new AppShell();
