@@ -1,11 +1,17 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+
+using FitnessTracker.Maui.ViewModels;
+
 namespace FitnessTracker.Maui.Views;
 
 public partial class SettingsPage : ContentPage
 {
-	public SettingsPage()
+    SettingsViewModel ViewModel;
+    public SettingsPage()
 	{
 		InitializeComponent();
-	}
+        BindingContext = ViewModel = Ioc.Default.GetRequiredService<SettingsViewModel>();
+    }
 
     async void OnTapGestureRecognizerTapped(object sender, EventArgs args)
     {

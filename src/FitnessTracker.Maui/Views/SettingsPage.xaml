@@ -4,18 +4,20 @@
              x:Class="FitnessTracker.Maui.Views.SettingsPage"
              Title="SettingsPage">
     <VerticalStackLayout>
-		<VerticalStackLayout.GestureRecognizers>
+        <VerticalStackLayout.GestureRecognizers>
             <ClickGestureRecognizer NumberOfClicksRequired="5" Clicked="OnClickGestureRecognizerTapped" />
             <TapGestureRecognizer NumberOfTapsRequired="5" Tapped="OnTapGestureRecognizerTapped" />
-		</VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout.GestureRecognizers>
         <Label
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" >
-			<Label.GestureRecognizers>
+            <Label.GestureRecognizers>
                 <ClickGestureRecognizer NumberOfClicksRequired="5" Clicked="OnClickGestureRecognizerTapped"/>
                 <TapGestureRecognizer NumberOfTapsRequired="5" Tapped="OnTapGestureRecognizerTapped" />
-			</Label.GestureRecognizers>
+            </Label.GestureRecognizers>
         </Label>
+        <Button Text="Show Logs" />
+        
     </VerticalStackLayout>
 </ContentPage>

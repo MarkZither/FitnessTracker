@@ -60,6 +60,7 @@ namespace FitnessTracker.Maui
                 serviceCollection
                 //ViewModels
                 .AddTransient<MainPageViewModel>()
+                .AddTransient<SettingsViewModel>()
                 .AddLogging(l => l.AddSerilog(logger))
                 .BuildServiceProvider());
 
