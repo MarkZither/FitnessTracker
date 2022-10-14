@@ -1,21 +1,27 @@
 ﻿using FitnessTracker.Maui.Services;
 using FitnessTracker.Maui.ViewModels;
 
+using Microsoft.Extensions.Logging;
+
+using Serilog;
+
 namespace FitnessTracker.Tests.ViewModels
 {
     public class MainPageViewModelTests
     {
         private IGeolocationService subGeolocationService;
+        private ILogger<MainPageViewModel> _logger;
 
         public MainPageViewModelTests()
         {
             this.subGeolocationService = Substitute.For<IGeolocationService>();
+            this._logger = Substitute.For<ILogger<MainPageViewModel>>();
         }
 
         private MainPageViewModel CreateViewModel()
         {
             return new MainPageViewModel(
-                this.subGeolocationService);
+                this.subGeolocationService, _logger);
         }
 
         [Fact]
