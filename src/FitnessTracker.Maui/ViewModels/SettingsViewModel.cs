@@ -13,7 +13,7 @@ namespace FitnessTracker.Maui.ViewModels
     {
         public SettingsViewModel()
         {
-            OpenLogClickedCommand = new AsyncRelayCommand(OpenLog);
+                OpenLogClickedCommand = new AsyncRelayCommand(OpenLogAsync);
         }
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace FitnessTracker.Maui.ViewModels
         /// </summary>
         public ICommand OpenLogClickedCommand { get; }
 
-        public async Task OpenLog()
+        public async Task OpenLogAsync()
         {
             await Shell.Current.GoToAsync("//logviewer");
         }

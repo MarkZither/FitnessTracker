@@ -65,6 +65,10 @@
                   Icon="info.png"
                   ContentTemplate="{DataTemplate views:SettingsPage}" />
 
+    <ShellContent Route="logviewer"
+                      FlyoutItemIsVisible="False"
+                      ContentTemplate="{DataTemplate views:LogViewerPage}"/>
+
     <MenuItem Text="Help"
               IconImageSource="help.png"
               Command="{Binding HelpCommand}"

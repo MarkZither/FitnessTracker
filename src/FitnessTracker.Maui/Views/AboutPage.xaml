@@ -9,4 +9,5 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>
+    <Button x:Name="btnShowLogs"  Text="Show Logs" />
 </ContentPage>
