@@ -7,5 +7,8 @@
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+        <Editor x:Name="editor"
+        Placeholder="Enter your response here"
+        HeightRequest="250" />
     </VerticalStackLayout>
 </ContentPage>

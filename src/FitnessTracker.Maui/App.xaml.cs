@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using FitnessTracker.Maui.Configuration;
 using Serilog;
+using Serilog.Sinks.InMemory;
 
 namespace FitnessTracker.Maui
 {
@@ -35,6 +36,7 @@ namespace FitnessTracker.Maui
             var logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .WriteTo.File(logPath, outputTemplate: fileOutputTemplate)
+                .WriteTo.InMemory()
                 .CreateLogger();
 
             var settings = config.GetRequiredSection("Settings").Get<FitnessSettings>();
