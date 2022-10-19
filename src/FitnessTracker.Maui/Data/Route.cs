@@ -8,6 +8,6 @@ namespace FitnessTracker.Maui.Data
 {
     public class Route
     {
-        public IEnumerable<Location> Locations;
+        public IEnumerable<Location> Locations { get; set; }
     }
 }
