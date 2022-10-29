@@ -46,22 +46,22 @@ namespace FitnessTracker.Tests.Services
         }
 
         [Fact]
-        public void CounterClicked_StateUnderTest_ExpectedBehavior()
+        public void SaveARoute_EmptyDatabase_RouteSavedAndReturnedAsFirstRecord()
         {
             // Arrange
             var context = CreateContext();
 
             // Act
             List<TrackerLocation> locs = new List<TrackerLocation>();
-            TrackerLocation loc = new TrackerLocation() {Latitude = 21, Longitude = 50 };
+            TrackerLocation? loc = new Location() {Latitude = 21, Longitude = 50 } as TrackerLocation;
             locs.Add(loc);
             Route route = new Route() { Locations = locs };
             context.Routes.Add(route);
             context.SaveChanges();
 
             // Assert
-            //Assert.Collection<Route>(context.Routes.ToList(), 
-            //    item => Assert.Equal(loc, item));
+            Assert.Collection<TrackerLocation>(context.Routes.First().Locations.ToList(), 
+                item => Assert.Equal(loc, item));
             Assert.Equal(context.Routes.First().Locations.First(), loc);
         }
 
