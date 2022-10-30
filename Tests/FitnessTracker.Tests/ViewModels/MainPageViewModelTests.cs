@@ -9,19 +9,21 @@ namespace FitnessTracker.Tests.ViewModels
 {
     public class MainPageViewModelTests
     {
-        private IGeolocationService subGeolocationService;
-        private ILogger<MainPageViewModel> _logger;
+        private readonly IGeolocationService subGeolocationService;
+        private readonly IRouteStorageService subRouteStorageService;
+        private readonly ILogger<MainPageViewModel> _logger;
 
         public MainPageViewModelTests()
         {
             this.subGeolocationService = Substitute.For<IGeolocationService>();
+            this.subRouteStorageService = Substitute.For<IRouteStorageService>();
             this._logger = Substitute.For<ILogger<MainPageViewModel>>();
         }
 
         private MainPageViewModel CreateViewModel()
         {
             return new MainPageViewModel(
-                this.subGeolocationService, _logger);
+                this.subGeolocationService, this.subRouteStorageService, _logger);
         }
 
         [Fact]

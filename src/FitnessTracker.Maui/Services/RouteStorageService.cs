@@ -12,7 +12,12 @@ namespace FitnessTracker.Maui.Services
     {
         public void SaveRoute(IEnumerable<Location> locations)
         {
-
+            IEnumerable<TrackerLocation> trackerLocations = from x in locations
+                                                            select new TrackerLocation(){
+                                                                Latitude = x.Latitude,
+                                                                Longitude = x.Longitude
+                                                            };
+            trackerLocations.Count();
         }
 
         public IEnumerable<Route> GetRoutes()

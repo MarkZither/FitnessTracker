@@ -30,10 +30,14 @@ namespace FitnessTracker.Maui.ViewModels
         int accuracy = (int)GeolocationAccuracy.Default;
         CancellationTokenSource cts;
         private readonly IGeolocationService _geolocationService;
+        private readonly IRouteStorageService _routeStorageService;
         private readonly ILogger<MainPageViewModel> _logger;
-        public MainPageViewModel(IGeolocationService geolocationService, ILogger<MainPageViewModel> logger)
+        public MainPageViewModel(IGeolocationService geolocationService
+            ,IRouteStorageService routeStorageService
+            , ILogger<MainPageViewModel> logger)
         {
             _geolocationService = geolocationService;
+            _routeStorageService = routeStorageService;
             _logger = logger;
             BtnCounterText = "Click me";
             BtnStartStopText = "Start";
@@ -195,6 +199,7 @@ namespace FitnessTracker.Maui.ViewModels
                 var toast = Toast.Make(message, duration, fontSize);
                 var cancellationToken = new CancellationToken(); 
                 await toast.Show(cancellationToken);
+                _routeStorageService.SaveRoute(trackedLocations);
             }
 
             //SemanticScreenReader.Announce(CounterBtn.Text);

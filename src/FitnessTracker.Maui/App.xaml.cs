@@ -56,6 +56,7 @@ namespace FitnessTracker.Maui
                 {
                     serviceCollection.AddSingleton<IGeolocationService, GeolocationService>();
                 }
+                serviceCollection.AddSingleton<IRouteStorageService, RouteStorageService>();
                 //.AddSingleton(RestService.For<IRedditService>("https://www.reddit.com/"))
 
                 Ioc.Default.ConfigureServices(

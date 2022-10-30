@@ -14,12 +14,12 @@ namespace FitnessTracker.Tests.Services
 {
     public class RouteStorageServiceTests : IDisposable
     {
-        private IRouteStorageService subRouteStorageService;
-        private ILogger<RouteStorageServiceTests> _logger;
+        private readonly IRouteStorageService subRouteStorageService;
+        private readonly ILogger<RouteStorageServiceTests> _logger;
 
         //private readonly TrackerContext _context;
-        private SqliteConnection _connection;
-        private DbContextOptions<TrackerContext> _contextOptions;
+        private readonly SqliteConnection _connection;
+        private readonly DbContextOptions<TrackerContext> _contextOptions;
         TrackerContext CreateContext() => new TrackerContext(_contextOptions);
 
         public RouteStorageServiceTests()
