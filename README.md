@@ -62,3 +62,7 @@ https://montemagno.com/dotnet-maui-appsettings-json-configuration/
 
 ## Toast and Snackbars
 https://vladislavantonyuk.azurewebsites.net/articles/How-to-show-SnackBar-and-Toast-in-.NET-MAUI
+
+
+# DataContext
+`dotnet ef migrations add InitialMigration -o Data\Migrations`
