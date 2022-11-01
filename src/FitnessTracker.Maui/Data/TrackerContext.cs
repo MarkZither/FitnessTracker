@@ -4,6 +4,8 @@ namespace FitnessTracker.Maui.Data
 {
     public class TrackerContext : DbContext
     {
+        public TrackerContext()
+        { }
         public TrackerContext(DbContextOptions<TrackerContext> options) : base(options)
         {
         }
@@ -13,6 +15,11 @@ namespace FitnessTracker.Maui.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Route>().ToTable("Route");
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(@"Data Source=TrackerOnConfiguring.db");
         }
     }
 }

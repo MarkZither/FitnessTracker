@@ -12,6 +12,8 @@ using System.Reflection;
 using FitnessTracker.Maui.Configuration;
 using Serilog;
 using Serilog.Sinks.InMemory;
+using FitnessTracker.Maui.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitnessTracker.Maui
 {
@@ -65,7 +67,20 @@ namespace FitnessTracker.Maui
                 .AddTransient<MainPageViewModel>()
                 .AddTransient<SettingsViewModel>()
                 .AddLogging(l => l.AddSerilog(logger))
+                .AddDbContext<TrackerContext>(options =>
+                    options.UseSqlite("Data Source=tracker.db",
+                        x => x.MigrationsAssembly("FitnessTracker.Maui"))
+                    )
                 .BuildServiceProvider());
+
+                // initialize database
+                using (var scope = Ioc.Default.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<TrackerContext>();
+                    //https://blog.jetbrains.com/dotnet/2022/08/24/entity-framework-core-and-multiple-database-providers/
+                    //await TrackerContext.InitializeAsync(db);
+                    db.Database.Migrate();
+                }
 
                 AppCenterSetup.Instance.Start(
                     //"[iOS AppCenter secret]",
