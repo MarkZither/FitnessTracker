@@ -19,7 +19,10 @@ namespace FitnessTracker.Maui.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Data Source=TrackerOnConfiguring.db");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite(@"Data Source=TrackerOnConfiguring.db");
+            }
         }
     }
 }

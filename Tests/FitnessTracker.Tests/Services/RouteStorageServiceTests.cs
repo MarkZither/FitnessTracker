@@ -24,8 +24,9 @@ namespace FitnessTracker.Tests.Services
 
         public RouteStorageServiceTests()
         {
-            this.subRouteStorageService = new RouteStorageService();
             this._logger = Substitute.For<ILogger<RouteStorageServiceTests>>();
+            var serviceLogger = Substitute.For<ILogger<RouteStorageService>>();
+            
             // Create and open a connection. This creates the SQLite in-memory database, which will persist until the connection is closed
             // at the end of the test (see Dispose below).
             //_connection = new SqliteConnection("Filename=:memory:");
@@ -43,6 +44,7 @@ namespace FitnessTracker.Tests.Services
             if (context.Database.EnsureCreated())
             {
             }
+            this.subRouteStorageService = new RouteStorageService(serviceLogger, context);
         }
 
         [Fact]
@@ -53,7 +55,7 @@ namespace FitnessTracker.Tests.Services
 
             // Act
             List<TrackerLocation> locs = new List<TrackerLocation>();
-            TrackerLocation? loc = new Location() {Latitude = 21, Longitude = 50 } as TrackerLocation;
+            TrackerLocation loc = new TrackerLocation() {Latitude = 21, Longitude = 50 };
             locs.Add(loc);
             Route route = new Route() { Locations = locs };
             context.Routes.Add(route);
